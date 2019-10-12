@@ -1,5 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const _ = require('underscore');
+
 const Usuario = require('../models/usuario');
 
 const app = express();
@@ -36,11 +38,39 @@ app.post('/usuario', function(req, res) {
 
 });
 
+/* Método que permite actualizar la información utilizando el ID del usuario
+   los parámetros actuan de la sig. manera:
+   id, 
+   body: parámetros de la BD, 
+   
+   {new: true}: actualiza la información al comprobarlo en POSTMAN
+   {runValidators: true} valida las operaciones creadas en el esquema: por ejemplo: 'rolesValidados'
+
+   Función flecha del err y los usuarios de la BD */
+
 app.put('/usuario/:id', function(req, res) {
     let id = req.params.id;
-    res.json({
-        id
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']); /* Unicamente permite actualizar estos objetos por medio de pick */
+
+    /* Evita actualizar los campos es útil cuando son pocos objetos
+    delete body.password;
+    delete body.google;
+    */
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err
+            });
+        }
+
+        res.json({
+            ok: true,
+            usuario: usuarioDB
+        });
+
     });
+
 });
 
 app.delete('/usuario', function(req, res) {
