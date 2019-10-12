@@ -8,7 +8,32 @@ const app = express();
 
 
 app.get('/usuario', function(req, res) {
-    res.json('get')
+
+    let desde = req.query.desde || 0;
+    desde = Number(desde); /* allowed send parameters; convert DESDE number */
+
+    let limite = req.query.limite || 5;
+    limite = Number(limite);
+
+    /* Example: ?limite10&desde=10 */
+
+    Usuario.find({})
+        .skip(desde)
+        .limit(limite) /* allowed users on screen */
+        .exec((err, usuario) => { /* execute find err or show objects array*/
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            res.json({
+                ok: true,
+                usuario
+            });
+
+        });
 });
 
 app.post('/usuario', function(req, res) {
