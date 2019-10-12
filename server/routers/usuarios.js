@@ -17,8 +17,9 @@ app.get('/usuario', function(req, res) {
 
     /* Example: ?limite10&desde=10 */
 
+    /* Unicamente imprime en pantalla los usuarios existentes: {estado: true} */
     /* Se pueden seleccionar campos a imprimir: 'nombre email'*/
-    Usuario.find({}, 'nombre email') /* La condición debe ser igual en caso de que hubiera en el 'count' */
+    Usuario.find({ estado: true }, 'nombre email') /* La condición debe ser igual en caso de que hubiera en el 'count' */
         .skip(desde)
         .limit(limite) /* allowed users on screen */
         .exec((err, usuario) => { /* execute find err or show objects array*/
@@ -30,7 +31,7 @@ app.get('/usuario', function(req, res) {
             }
 
             /* Cuenta el total de datos */
-            Usuario.count({}, (err, conteo) => {
+            Usuario.count({ estado: true }, (err, conteo) => {
                 res.json({
                     ok: true,
                     usuario,
@@ -105,7 +106,14 @@ app.put('/usuario/:id', function(req, res) {
 app.delete('/usuario/:id', function(req, res) {
     let id = req.params.id;
 
-    Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    let cambiaEstado = {
+        estado: false
+    };
+
+    //Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    //Borra los objetos de forma física
+
+    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
