@@ -17,7 +17,7 @@ app.get('/usuario', function(req, res) {
 
     /* Example: ?limite10&desde=10 */
 
-    Usuario.find({})
+    Usuario.find({}) /* La condición debe ser igual en caso de que hubiera en el 'count' */
         .skip(desde)
         .limit(limite) /* allowed users on screen */
         .exec((err, usuario) => { /* execute find err or show objects array*/
@@ -28,11 +28,14 @@ app.get('/usuario', function(req, res) {
                 });
             }
 
-            res.json({
-                ok: true,
-                usuario
+            /* Cuenta el total de datos */
+            Usuario.count({}, (err, conteo) => {
+                res.json({
+                    ok: true,
+                    usuario,
+                    cuantos: conteo
+                });
             });
-
         });
 });
 
