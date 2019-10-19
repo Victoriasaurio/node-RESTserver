@@ -13,8 +13,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-// Importa la ruta de usuarios o server
-app.use(require('./routers/usuarios'));
+//Configuración global de rutas; para poder hacer pruebas en postman
+app.use(require('./routers/index'));
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true }, (err, res) => {
 
