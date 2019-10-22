@@ -75,7 +75,7 @@ async function verify(token) {
 
 
 
-//Send ID token with an HTTPS POST reqest
+//Send ID token with an HTTPS POST request
 app.post('/google', async(req, res) => {
 
     let token = req.body.idtoken;
