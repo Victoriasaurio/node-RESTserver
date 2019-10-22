@@ -2,6 +2,7 @@ require('./config/config');
 
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 
@@ -13,6 +14,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+//Habilitar la carpeta públic
+app.use(express.static(path.resolve(__dirname, '../public')));
+
 //Configuración global de rutas; para poder hacer pruebas en postman
 app.use(require('./routers/index'));
 
@@ -22,7 +26,6 @@ mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: tru
 
     console.log('Base de datos ONLINE');
 });
-
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando el puerto de Tony Stark', process.env.PORT);
